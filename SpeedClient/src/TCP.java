@@ -25,16 +25,15 @@ public class TCP extends Thread{
         try {
             clientSocket = new Socket(addressIP, port);
             clientSocket.setTcpNoDelay(nagle);
-            DataOutputStream outToServer = new DataOutputStream(clientSocket.getOutputStream());
-            sleep(200L);
-            byte[] firstMsg = new String("SIZE:" + bufferSize).getBytes();
-            outToServer.write(firstMsg, 0, firstMsg.length);
-            byte[] buf = getSenderBuffer();
+            DataOutputStream out = new DataOutputStream(clientSocket.getOutputStream());
+            sleep(200);
+            byte[] firstMessage = new String("SIZE:" + bufferSize).getBytes();
+            out.write(firstMessage, 0, firstMessage.length);
+            byte[] buffer = prepareBuffer();
             while(!done) {
-                sleep(10L);
-                outToServer.write(buf, 0, buf.length);
+                sleep(10);
+                out.write(buffer, 0, buffer.length);
             }
-
         } catch (IOException e) {
             if(!done) {
                 e.printStackTrace();
@@ -44,10 +43,10 @@ public class TCP extends Thread{
         }
     }
 
-    public byte[] getSenderBuffer() {
-        byte[] buf = new byte[bufferSize];
-        Arrays.fill(buf, (byte)bufferSize);
-        return buf;
+    public byte[] prepareBuffer() {
+        byte[] buffer = new byte[bufferSize];
+        Arrays.fill(buffer, (byte)bufferSize);
+        return buffer;
     }
 
     public void end()

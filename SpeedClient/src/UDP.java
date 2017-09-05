@@ -22,17 +22,17 @@ public class UDP extends Thread {
 
     public void run()
     {
-        byte[] buf = getSenderBuffer();
+        byte[] buffer = prepareBuffer();
         try {
             server = new DatagramSocket();
-            sleep(200L);
-            byte[] firstMsg = new String("SIZE:" + bufferSize).getBytes();
-            DatagramPacket pack = new DatagramPacket(firstMsg, firstMsg.length, InetAddress.getByName(addressIP), port);
-            server.send(pack);
-            pack = new DatagramPacket(buf, buf.length, InetAddress.getByName(addressIP), port);
+            sleep(200);
+            byte[] firstMessage = new String("SIZE:" + bufferSize).getBytes();
+            DatagramPacket packet = new DatagramPacket(firstMessage, firstMessage.length, InetAddress.getByName(addressIP), port);
+            server.send(packet);
+            packet = new DatagramPacket(buffer, buffer.length, InetAddress.getByName(addressIP), port);
             while (!done) {
-                sleep(10L);
-                server.send(pack);
+                sleep(10);
+                server.send(packet);
             }
         } catch (IOException e) {
         if(!done) {
@@ -43,7 +43,7 @@ public class UDP extends Thread {
         }
     }
 
-    public byte[] getSenderBuffer() {
+    public byte[] prepareBuffer() {
         byte[] buf = new byte[bufferSize];
         Arrays.fill(buf, (byte)bufferSize);
         return buf;
